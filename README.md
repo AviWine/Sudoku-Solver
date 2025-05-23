@@ -1,2 +1,2 @@
 # beginner-projects
-Some early projects to become familiar with GitHub
+A project to learn the backtracking algorithm and creating a GUI 
