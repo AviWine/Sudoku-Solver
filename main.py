@@ -22,7 +22,7 @@ def meets_constraints(grid: list, i,j, decision:int, n=9) -> bool:
         :return: True or False
         '''
         # Check row
-        if grid[i].count(decision) > 1:
+        if grid[i].count(decision) >= 1:
                 return False
 
         # Check column
@@ -40,52 +40,40 @@ def meets_constraints(grid: list, i,j, decision:int, n=9) -> bool:
 
         return True
 
-def mutability_recall(grid: list) -> list:
-    mut_grid = deepcopy(grid)
 
-    for i in range(len(grid)):
-        for j in range(len(grid[0])):
-            if grid[i][j] != 0:
-                mut_grid[i][j] = False
-            else:
-                mut_grid[i][j] = True
-
-    return mut_grid
-
-
-def find_solution(grid: list, mut_grid: list, i=0, j=0, n=9) -> tuple:
+def find_solution(grid: list, i=-1, j=-1, n=9) -> tuple:
         '''
         A backtracking algorithm to find a solution
-        :param grid:
-        :param mut_grid: list of boolean values containing a bool value on the mutability of each entry
+        :param grid: sudoku grid
         :param i: row index
         :param j: column index
         :param n: size of square grid
         :return: Either a solution or a backtracking instance
         '''
-        for candidate in range(1, n + 1):  # Accept if adheres to constraints
+        # row, col = i, j
+        while True:  # Finding the next mutable entry
+                j = (j + 1) % n
+                if j == 0:
+                        i += 1
 
-                if not meets_constraints(grid=grid, i=i, j=j, decision=candidate):
+                # Base case (we terminate whenever the last mutable entry is out of range)
+                if i == n:
+                        return (grid, True)
+
+                if grid[i][j] == 0:  # Mutable entry found
+                        break
+
+        for candidate in range(1, n + 1):
+
+                if not meets_constraints(grid=grid, i=i, j=j, decision=candidate):  # Accept if adheres to constraints
                         continue
 
                 grid[i][j] = candidate
 
-                while True:  # Finding the next mutable entry
-                        j = (j + 1) % n
-                        if j == 0:
-                                i += 1
+                (new_grid, val) = find_solution(grid=grid, i=i, j=j)  # Recursive call
 
-                        # Base case (we terminate whenever the last mutable entry is out of range)
-                        if i == n:
-                                return (grid, True)
-
-                        if mut_grid[i][j]:
-                                break
-
-                (grid, val) = find_solution(grid=grid, mut_grid=mut_grid, i=i, j=j)  # Recursive call
-                # print(grid, val)
                 if val:
-                        return (grid, val)
+                        return (new_grid, val)
 
         return (grid, False)
 
@@ -102,5 +90,4 @@ if __name__ == '__main__':
         [0, 0, 3, 4, 0, 0, 0, 0, 0],
         [0, 0, 0, 2, 0, 0, 6, 0, 0]]
 
-        mut_grid = mutability_recall(grid)
-        print(find_solution(grid=grid, mut_grid=mut_grid))
+        print(find_solution(grid=grid))
