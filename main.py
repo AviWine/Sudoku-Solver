@@ -1,4 +1,4 @@
-import numpy as np
+from copy import deepcopy
 
 # starting with a solvable sudoku puzzle
 grid= [[0, 0, 0, 8, 0, 1, 0, 0, 0],
@@ -41,7 +41,7 @@ def meets_constraints(grid: list, i,j, decision:int, n=9) -> bool:
         return True
 
 def mutability_recall(grid: list) -> list:
-    mut_grid = grid.copy()
+    mut_grid = deepcopy(grid)
 
     for i in range(len(grid)):
         for j in range(len(grid[0])):
@@ -63,30 +63,31 @@ def find_solution(grid: list, mut_grid: list, i=0, j=0, n=9) -> tuple:
         :param n: size of square grid
         :return: Either a solution or a backtracking instance
         '''
-        # Base case
-        if i == n:
-                return (grid, True)
-
-        for candidate in range(1, n):  # Accept if adheres to constraints
+        for candidate in range(1, n + 1):  # Accept if adheres to constraints
 
                 if not meets_constraints(grid=grid, i=i, j=j, decision=candidate):
                         continue
 
                 grid[i][j] = candidate
 
-                while True:
+                while True:  # Finding the next mutable entry
                         j = (j + 1) % n
                         if j == 0:
                                 i += 1
+
+                        # Base case (we terminate whenever the last mutable entry is out of range)
+                        if i == n:
+                                return (grid, True)
+
                         if mut_grid[i][j]:
                                 break
 
                 (grid, val) = find_solution(grid=grid, mut_grid=mut_grid, i=i, j=j)  # Recursive call
-                print(grid, val)
+                # print(grid, val)
                 if val:
                         return (grid, val)
 
-                return (grid, False)
+        return (grid, False)
 
 
 if __name__ == '__main__':
@@ -101,4 +102,5 @@ if __name__ == '__main__':
         [0, 0, 3, 4, 0, 0, 0, 0, 0],
         [0, 0, 0, 2, 0, 0, 6, 0, 0]]
 
-        mutability_recall(grid)
+        mut_grid = mutability_recall(grid)
+        print(find_solution(grid=grid, mut_grid=mut_grid))
