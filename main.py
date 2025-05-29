@@ -1,16 +1,5 @@
 from copy import deepcopy
 
-# starting with a solvable sudoku puzzle
-grid= [[0, 0, 0, 8, 0, 1, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 4, 3, 0],
-        [5, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 7, 0, 8, 0, 0],
-        [0, 0, 0, 0, 0, 0, 1, 0, 0],
-        [0, 2, 0, 0, 3, 0, 0, 0, 0],
-        [6, 0, 0, 0, 0, 0, 0, 7, 5],
-        [0, 0, 3, 4, 0, 0, 0, 0, 0],
-        [0, 0, 0, 2, 0, 0, 6, 0, 0]]
-
 def meets_constraints(grid: list, i,j, decision:int, n=9) -> bool:
         '''
         Validation potential entry choice
@@ -75,7 +64,13 @@ def find_solution(grid: list, i=-1, j=-1, n=9) -> tuple:
                 if val:
                         return (new_grid, val)
 
+        grid[i][j] = 0 # Re-initialising entry value
         return (grid, False)
+
+
+def print_board(grid:list):
+        for row in grid:
+                print(row)
 
 
 if __name__ == '__main__':
@@ -90,4 +85,5 @@ if __name__ == '__main__':
         [0, 0, 3, 4, 0, 0, 0, 0, 0],
         [0, 0, 0, 2, 0, 0, 6, 0, 0]]
 
-        print(find_solution(grid=grid))
+        solved_grid, val = find_solution(grid=grid)
+        print_board(grid=solved_grid)
