@@ -10,8 +10,9 @@ def meets_constraints(grid: list, i,j, decision:int, n=9) -> bool:
         :param n: size of grid
         :return: True or False
         '''
+        grid[i][j] = decision # assigning the proposed value
         # Check row
-        if grid[i].count(decision) >= 1:
+        if grid[i].count(decision) > 1:
                 return False
 
         # Check column
@@ -39,7 +40,6 @@ def find_solution(grid: list, i=-1, j=-1, n=9) -> tuple:
         :param n: size of square grid
         :return: Either a solution or a backtracking instance
         '''
-        # row, col = i, j
         while True:  # Finding the next mutable entry
                 j = (j + 1) % n
                 if j == 0:
@@ -51,6 +51,10 @@ def find_solution(grid: list, i=-1, j=-1, n=9) -> tuple:
 
                 if grid[i][j] == 0:  # Mutable entry found
                         break
+
+                elif not meets_constraints(grid=grid, i=i, j=j,
+                                           decision=grid[i][j]):  # ensure non-mutable entries obey the rules
+                        return (grid, False)
 
         for candidate in range(1, n + 1):
 
@@ -64,9 +68,8 @@ def find_solution(grid: list, i=-1, j=-1, n=9) -> tuple:
                 if val:
                         return (new_grid, val)
 
-        grid[i][j] = 0 # Re-initialising entry value
+        grid[i][j] = 0  # Re-initialising entry
         return (grid, False)
-
 
 def print_board(grid:list):
         for row in grid:
@@ -76,14 +79,15 @@ def print_board(grid:list):
 if __name__ == '__main__':
 
         grid = [[0, 0, 0, 8, 0, 1, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 4, 3, 0],
-        [5, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 7, 0, 8, 0, 0],
-        [0, 0, 0, 0, 0, 0, 1, 0, 0],
-        [0, 2, 0, 0, 3, 0, 0, 0, 0],
-        [6, 0, 0, 0, 0, 0, 0, 7, 5],
-        [0, 0, 3, 4, 0, 0, 0, 0, 0],
-        [0, 0, 0, 2, 0, 0, 6, 0, 0]]
+                [0, 0, 0, 0, 0, 0, 4, 3, 0],
+                [5, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 7, 0, 8, 0, 0],
+                [0, 0, 0, 0, 0, 0, 1, 0, 0],
+                [0, 2, 0, 0, 3, 0, 0, 0, 0],
+                [6, 0, 0, 0, 0, 0, 0, 7, 5],
+                [0, 0, 3, 4, 0, 0, 0, 0, 0],
+                [0, 0, 0, 2, 0, 0, 6, 0, 0]]
 
         solved_grid, val = find_solution(grid=grid)
-        print_board(grid=solved_grid)
+
+        print_board(grid=solved_grid) if val else print('Unsolvable')
