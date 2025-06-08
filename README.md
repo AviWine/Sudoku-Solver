@@ -16,6 +16,6 @@ A simple 9×9 Sudoku puzzle solver with a graphical user interface built using P
 ## 🚀 How to Run
 
 ```bash
-python sudoku_gui.py
+python GUI.py
 
 
